@@ -1,9 +1,17 @@
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { getActivePlan, getTodayCompletions, getWeeklyStats } from "@/lib/actions";
 import { TaskList } from "@/components/TaskList";
 import { WeeklyChart } from "@/components/WeeklyChart";
 
 export default async function Dashboard() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
   const plan = await getActivePlan();
 
   if (!plan) {
